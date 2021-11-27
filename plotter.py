@@ -29,3 +29,6 @@ def plot_field_at_slice(field, grid_1, grid_2, field_name='H', grid_1_name='x', 
                                  tight_subplots = True,
                                  plot_colorbar = [False, False, False, True],                                 
                                  figsize = (16,4))
+
+def temp_func():
+	print('test')
