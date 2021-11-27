@@ -1,0 +1,1 @@
+This package is written to facilitate visualizing and processing simulated/measured EM-field data.
