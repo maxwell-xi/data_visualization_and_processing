@@ -37,6 +37,6 @@ def negative_gradient_check(g):
     
     if neg_amount !=0:
         print('Number of negative-gradient data points fixed: {}'.format(neg_amount))
-        g[np.argwhere(g<0)] = 0
+        g[np.nonzero(g<0)] = 0  #np.argwhere does not work
     
     return g
