@@ -1,6 +1,11 @@
 import scipy.io
 import numpy as np
 
+# modules needed by the func import_field_from_dasy_in_cache
+from pyrec.supermash_cachefile_loader import SuperMashCachefileLoader
+import pyrec.mathvec3 as mv
+import h5py
+
 def import_field_from_s4l_in_mat(filename, print_grid=0):
     input_data = scipy.io.loadmat(filename)
 
@@ -87,3 +92,74 @@ def import_field_from_dasy_in_mat(filename, grid_step_mm=5, print_grid=0):
               format(1e3*np.min(grid_z_extracted), 1e3*np.max(grid_z_extracted), grid_step_mm, grid_z_pts))
         
     return grid, output_field
+	
+
+def import_field_from_dasy_in_cache(filename, distance_mm, print_grid=True):
+    # extract the meas grid
+    f = h5py.File(filename, 'r')
+    grid_points = f['gridcache']['mapentry_0_']['grid']['_Object']['_Points']
+    grid_shape = f['gridcache']['mapentry_0_']['grid']['_Object']['_Dimensions']
+    grid_points_x = grid_points[:,0].reshape(grid_shape[0], grid_shape[1], order='F')
+    grid_points_y = grid_points[:,1].reshape(grid_shape[0], grid_shape[1], order='F')
+    grid_points_z = grid_points[:,2].reshape(grid_shape[0], grid_shape[1], order='F')
+    grid_x = grid_points_x[:,0]
+    grid_y = grid_points_y[0,:]
+    grid_z = grid_points_z[:,0]
+    grid_0 = [grid_x, grid_y]
+    
+    
+    # extract E, H, and S, as well as their grids. Note that S has a grid different from E and H. 
+    result = SuperMashCachefileLoader([filename])
+    e_meas, loc_e = result.extract_fieldslice('E', distance_mm*1e-3)  # distance tolerance -0.09 mm ~ +0.1 mm
+    h_meas, loc_h = result.extract_fieldslice('H', distance_mm*1e-3)
+    s_meas, loc_s = result.extract_fieldslice('S', distance_mm*1e-3)
+  
+    grid_e_x = loc_e[0,:,0]; grid_e_y = loc_e[1,0,:]; grid_e_z = loc_e[2,0,:]; grid_e = [grid_e_x, grid_e_y]
+    grid_h_x = loc_h[0,:,0]; grid_h_y = loc_h[1,0,:]; grid_h_z = loc_h[2,0,:]; grid_h = [grid_h_x, grid_h_y]
+    grid_s_x = loc_s[0,:,0]; grid_s_y = loc_s[1,0,:]; grid_s_z = loc_s[2,0,:]; grid_s = [grid_s_x, grid_s_y]
+
+    # calcu the interested quantities
+    e_tot_rms = np.real(mv.mag3(e_meas / np.sqrt(2)))
+    h_tot_rms = np.real(mv.mag3(h_meas / np.sqrt(2)))
+    s_z_real = np.real(s_meas[2,:,:])
+    s_tot_real = mv.mag3(np.real(s_meas))
+    s_tot_mod = np.real(mv.mag3(s_meas))
+    
+    if print_grid == True:
+        print('Meas grid')
+        print('Numbers of x-, y-axis grid lines: {}, {}'.format(grid_shape[0], grid_shape[1]))
+        print('Min and max x-axis coordinates [mm]: {:.2f}, {:.2f}; Grid step [mm]: {:.3f}'.format(np.min(grid_x)*1e3, np.max(grid_x)*1e3, 1e3*(np.max(grid_x)-np.min(grid_x))/(grid_shape[0]-1)))
+        print('Min and max y-axis coordinates [mm]: {:.2f}, {:.2f}; Grid step [mm]: {:.3f}'.format(np.min(grid_y)*1e3, np.max(grid_y)*1e3, 1e3*(np.max(grid_y)-np.min(grid_y))/(grid_shape[1]-1)))
+        if np.min(grid_z) == np.max(grid_z):
+            print('z-axis coordinate [mm]: {:.2f}'.format(np.min(grid_z)*1e3))
+        else:
+            print('Min and max z-axis coordinates [mm]: {:.2f}, {:.2f}'.format(np.min(grid_z)*1e3, np.max(grid_z)*1e3))
+        
+        print('\nE-field grid')
+        print('Numbers of x-, y-axis grid lines: {}, {}'.format(loc_e.shape[1], loc_e.shape[2]))
+        print('Min and max x-axis coordinates [mm]: {:.2f}, {:.2f}; Grid step [mm]: {:.3f}'.format(np.min(grid_e_x)*1e3, np.max(grid_e_x)*1e3, 1e3*(np.max(grid_e_x)-np.min(grid_e_x))/(loc_e.shape[1]-1)))
+        print('Min and max y-axis coordinates [mm]: {:.2f}, {:.2f}; Grid step [mm]: {:.3f}'.format(np.min(grid_e_y)*1e3, np.max(grid_e_y)*1e3, 1e3*(np.max(grid_e_y)-np.min(grid_e_y))/(loc_e.shape[2]-1)))
+        if np.min(grid_e_z) == np.max(grid_e_z):
+            print('z-axis coordinate [mm]: {:.2f}'.format(np.min(grid_e_z)*1e3))
+        else:
+            print('Min and max z-axis coordinates [mm]: {:.2f}, {:.2f}'.format(np.min(grid_e_z)*1e3, np.max(grid_e_z)*1e3))
+        
+        print('\nH-field grid')
+        print('Numbers of x-, y-axis grid lines: {}, {}'.format(loc_h.shape[1], loc_h.shape[2]))
+        print('Min and max x-axis coordinates [mm]: {:.2f}, {:.2f}; Grid step [mm]: {:.3f}'.format(np.min(grid_h_x)*1e3, np.max(grid_h_x)*1e3, 1e3*(np.max(grid_h_x)-np.min(grid_h_x))/(loc_h.shape[1]-1)))
+        print('Min and max y-axis coordinates [mm]: {:.2f}, {:.2f}; Grid step [mm]: {:.3f}'.format(np.min(grid_h_y)*1e3, np.max(grid_h_y)*1e3, 1e3*(np.max(grid_h_y)-np.min(grid_h_y))/(loc_h.shape[2]-1)))
+        if np.min(grid_h_z) == np.max(grid_h_z):
+            print('z-axis coordinate [mm]: {:.2f}'.format(np.min(grid_h_z)*1e3))
+        else:
+            print('Min and max z-axis coordinates [mm]: {:.2f}, {:.2f}'.format(np.min(grid_h_z)*1e3, np.max(grid_h_z)*1e3))
+        
+        print('\nS-field grid')
+        print('Numbers of x-, y-axis grid lines: {}, {}'.format(loc_s.shape[1], loc_s.shape[2]))
+        print('Min and max x-axis coordinates [mm]: {:.2f}, {:.2f}; Grid step [mm]: {:.3f}'.format(np.min(grid_s_x)*1e3, np.max(grid_s_x)*1e3, 1e3*(np.max(grid_s_x)-np.min(grid_s_x))/(loc_s.shape[1]-1)))
+        print('Min and max y-axis coordinates [mm]: {:.2f}, {:.2f}; Grid step [mm]: {:.3f}'.format(np.min(grid_s_y)*1e3, np.max(grid_s_y)*1e3, 1e3*(np.max(grid_s_y)-np.min(grid_s_y))/(loc_s.shape[2]-1)))
+        if np.min(grid_s_z) == np.max(grid_s_z):
+            print('z-axis coordinate [mm]: {:.2f}'.format(np.min(grid_s_z)*1e3))
+        else:
+            print('Min and max z-axis coordinates [mm]: {:.2f}, {:.2f}'.format(np.min(grid_s_z)*1e3, np.max(grid_s_z)*1e3))
+    
+    return grid_0, grid_e, grid_h, grid_s, e_tot_rms, h_tot_rms, s_z_real, s_tot_real, s_tot_mod
