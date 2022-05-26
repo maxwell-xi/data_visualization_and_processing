@@ -113,17 +113,20 @@ def import_field_from_dasy_in_cache(filename, distance_mm, print_grid=True):
     e_meas, loc_e = result.extract_fieldslice('E', distance_mm*1e-3)  # distance tolerance -0.09 mm ~ +0.1 mm
     h_meas, loc_h = result.extract_fieldslice('H', distance_mm*1e-3)
     s_meas, loc_s = result.extract_fieldslice('S', distance_mm*1e-3)
+	
+	e_meas = e_meas / np.sqrt(2) # convert to rms value
+	h_meas = h_meas / np.sqrt(2)
   
     grid_e_x = loc_e[0,:,0]; grid_e_y = loc_e[1,0,:]; grid_e_z = loc_e[2,0,:]; grid_e = [grid_e_x, grid_e_y]
     grid_h_x = loc_h[0,:,0]; grid_h_y = loc_h[1,0,:]; grid_h_z = loc_h[2,0,:]; grid_h = [grid_h_x, grid_h_y]
     grid_s_x = loc_s[0,:,0]; grid_s_y = loc_s[1,0,:]; grid_s_z = loc_s[2,0,:]; grid_s = [grid_s_x, grid_s_y]
 
     # calcu the interested quantities
-    e_tot_rms = np.real(mv.mag3(e_meas / np.sqrt(2)))
-    h_tot_rms = np.real(mv.mag3(h_meas / np.sqrt(2)))
-    s_z_real = np.real(s_meas[2,:,:])
-    s_tot_real = mv.mag3(np.real(s_meas))
-    s_tot_mod = np.real(mv.mag3(s_meas))
+    #e_tot_rms = np.real(mv.mag3(e_meas / np.sqrt(2)))
+    #h_tot_rms = np.real(mv.mag3(h_meas / np.sqrt(2)))
+    #s_z_real = np.real(s_meas[2,:,:])
+    #s_tot_real = mv.mag3(np.real(s_meas))
+    #s_tot_mod = np.real(mv.mag3(s_meas))
     
     if print_grid == True:
         print('Meas grid')
@@ -162,4 +165,4 @@ def import_field_from_dasy_in_cache(filename, distance_mm, print_grid=True):
         else:
             print('Min and max z-axis coordinates [mm]: {:.2f}, {:.2f}'.format(np.min(grid_s_z)*1e3, np.max(grid_s_z)*1e3))
     
-    return grid_0, grid_e, grid_h, grid_s, e_tot_rms, h_tot_rms, s_z_real, s_tot_real, s_tot_mod
+    return grid_0, grid_e, grid_h, grid_s, e_meas, h_meas, s_meas
