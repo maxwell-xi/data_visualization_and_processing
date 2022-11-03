@@ -143,3 +143,62 @@ def z_component_avg(field, avg_square_sidelength_pts, ix, iy, iz):
     field_z_avg = np.sum(field_sample)/field_sample.size
     
     return field_z_avg
+
+	
+def remove_artifacts_from_2d_field_distribution(field, artifact_index):
+    artifact_index = artifact_index.tolist() # array-to-list conversion necessary to make "if a in b" check work
+    field_corrected = field.copy()
+    
+    i_max = field.shape[0] - 1
+    j_max = field.shape[1] - 1
+    
+    for artifact in artifact_index:
+        i = artifact[0]
+        j = artifact[1] 
+        
+        if i == 0: # left boundary
+            if j == 0: # left bottom corner                
+                print('Artifact happens at left bottom corner, thus cannot be estimated!')
+            elif j == j_max: # left top corner
+                print('Artifact happens at left top corner, thus cannot be estimated!')
+            else:
+                if (([i, j+1] in artifact_index) or ([i, j-1] in artifact_index)):
+                    print('Artifact happens at left boundary with adjacent artifact(s), thus cannot be estimated!')
+                else:                    
+                    field_corrected[i, j] = np.mean([field[i, j+1], field[i, j-1]])
+        elif i == i_max: # right boundary
+            if j == 0: # right bottom corner
+                print('Artifact happens at right bottom corner, thus cannot be estimated!')
+            elif j == j_max: # right top corner
+                print('Artifact happens at right top corner, thus cannot be estimated!')
+            else:
+                if (([i, j+1] in artifact_index) or ([i, j-1] in artifact_index)):
+                    print('Artifact happens at right boundary with adjacent artifact(s), thus cannot be estimated!')
+                else:                    
+                    field_corrected[i, j] = np.mean([field[i, j+1], field[i, j-1]])
+        else:
+            if j == 0: # bottom boundary except two end points
+                if (([i+1, j] in artifact_index) or ([i-1, j] in artifact_index)):
+                    print('Artifact happens at bottom boundary with adjacent artifact(s), thus cannot be estimated!')
+                else:
+                    field_corrected[i, j] = np.mean([field[i+1, j], field[i-1, j]])
+            elif j == j_max: # top boundary except two end points
+                if (([i+1, j] in artifact_index) or ([i-1, j] in artifact_index)):
+                    print('Artifact happens at top boundary with adjacent artifact(s), thus cannot be estimated!')
+                else:
+                    field_corrected[i, j] = np.mean([field[i+1, j], field[i-1, j]])
+            else:
+                if (([i, j+1] in artifact_index) or ([i, j-1] in artifact_index)):
+                    if (([i+1, j] in artifact_index) or ([i-1, j] in artifact_index)):
+                        print('Artifact happens within boundary with multiple adjacent artifacts, thus cannot be estimated!')
+                    else:
+                        field_corrected[i, j] = np.mean([field[i+1, j], field[i-1, j]])
+                elif (([i+1, j] in artifact_index) or ([i-1, j] in artifact_index)):
+                    if (([i, j+1] in artifact_index) or ([i, j-1] in artifact_index)):
+                        print('Artifact happens within boundary with multiple adjacent artifacts, thus cannot be estimated!')
+                    else:
+                        field_corrected[i, j] = np.mean([field[i, j+1], field[i, j-1]])
+                else:                
+                    field_corrected[i, j] = np.mean([field[i, j+1], field[i, j-1], field[i-1, j], field[i+1, j]])
+        
+    return field_corrected
