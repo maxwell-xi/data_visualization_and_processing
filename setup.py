@@ -16,6 +16,6 @@ setuptools.setup(
         "Bug Tracker": "https://github.com/maxwell-xi/data_visualization_and_processing/issues"
     },
     license='MIT',
-    packages=['toolbox'],
+    packages=['data_visualization_and_processing'],
     install_requires=['requests'],
 )
