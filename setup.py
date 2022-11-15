@@ -4,7 +4,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name='toolbox',
+    name='data_visualization_and_processing',
     version='0.0.1',
     author='Maxwell XI',
     author_email='xi@itis.swiss',
