@@ -1,6 +1,5 @@
 import numpy as np
 
-#test
 
 def extract_field_at_slice(field, slice_normal, slice_index):
     field_x = field[0]

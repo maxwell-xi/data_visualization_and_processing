@@ -2,8 +2,8 @@ import scipy.io
 import numpy as np
 
 # modules needed by the func import_field_from_dasy_in_cache
-from pyrec.supermash_cachefile_loader import SuperMashCachefileLoader
-import pyrec.mathvec3 as mv
+#from pyrec.supermash_cachefile_loader import SuperMashCachefileLoader
+#import pyrec.mathvec3 as mv
 import h5py
 
 def import_field_from_s4l_in_mat(filename, print_grid=0):

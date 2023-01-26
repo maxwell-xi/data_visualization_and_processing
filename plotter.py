@@ -1,10 +1,10 @@
 import numpy as np
-from pyrec.mpl_helpers import ComplexVectorPlotter
+from data_visualization_and_processing.complex_field_plotter import ComplexVectorPlotter
 cplt = ComplexVectorPlotter()
-import pyrec.numpy_ext as npx
+
 
 def plot_field_at_slice(field, grid_1, grid_2, field_name='H', grid_1_name='x', grid_2_name='y', db_scale=True):
-    grid_1b, grid_2b = npx.meshgrid(grid_1, grid_2)
+    grid_1b, grid_2b = np.meshgrid(grid_1, grid_2, indexing='ij')
     
     if db_scale == True:
         cplt.contourf_quantities(grid_1b, grid_2b, 
@@ -29,6 +29,3 @@ def plot_field_at_slice(field, grid_1, grid_2, field_name='H', grid_1_name='x', 
                                  tight_subplots = True,
                                  plot_colorbar = [False, False, False, True],                                 
                                  figsize = (16,4))
-
-def temp_func():
-	print('test')
