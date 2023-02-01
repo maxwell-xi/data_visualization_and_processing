@@ -3,14 +3,14 @@ from data_visualization_and_processing.complex_field_plotter import ComplexVecto
 cplt = ComplexVectorPlotter()
 
 
-def plot_field_at_slice(field, grid_1, grid_2, field_name='H', grid_1_name='x', grid_2_name='y', db_scale=True):
+def plot_field_at_slice(field, grid_1, grid_2, field_name='H', grid_1_name='x', grid_2_name='y', db_scale=True, db_min=-40):
     grid_1b, grid_2b = np.meshgrid(grid_1, grid_2, indexing='ij')
     
     if db_scale == True:
         cplt.contourf_quantities(grid_1b, grid_2b, 
                                  [field[0], field[1], field[2], field[3]], 
                                  titles = ['$|%s_{x}|$'%field_name, '$|%s_{y}|$'%field_name, '$|%s_{z}|$'%field_name, '$|%s_{tot}|$'%field_name],                        
-                                 levels_min = [-40,]*4,
+                                 levels_min = [db_min,]*4,
                                  xlabel='%s [mm]'%grid_1_name, ylabel='%s [mm]'%grid_2_name,  
                                  plot_rows_as_cols=True,
                                  compute_quantities = ['mag_db', 'mag_db', 'mag_db', 'mag_db'],
