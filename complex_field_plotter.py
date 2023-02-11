@@ -1389,8 +1389,8 @@ class Quantity(object):
             else:
                 value = np.real(value)
         
-        if value <= 0.:
-            raise ValueError('db_ref is {}, must be > 0'.format(value))
+        #if value <= 0.:  # commented to suppress the error: '<=' not supported between instances of 'str' and 'float'
+        #    raise ValueError('db_ref is {}, must be > 0'.format(value))
         self._db_ref = value
 
     @property

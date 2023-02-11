@@ -203,3 +203,18 @@ def remove_artifacts_from_2d_field_distribution(field, artifact_index):
                     field_corrected[i, j] = np.mean([field[i, j+1], field[i, j-1], field[i-1, j], field[i+1, j]])
         
     return field_corrected
+   
+  
+def extract_param_value_from_file_name(file_name, param_name):
+    param_string = file_name.split('\\')[-1] # extract the file name
+    end_index = param_string.rfind('.') # determine the end index of the actual file name (i.e., without the file extension)
+    param_string = param_string[:end_index] # remove the file extension
+    param_string_2 = param_string.split('_') # split the actual file name into multiple sections based on deliminator '_'
+    param_name_len = len(param_name)
+
+    for s in param_string_2:
+        if param_name in s:
+            start_index = s.find(param_name) + param_name_len # determine the start index of the param value
+            param_value = float(s[start_index:])
+    
+    return param_value  
