@@ -1,4 +1,5 @@
 import numpy as np
+from sigfig import round
 
 
 def extract_field_at_slice(field, slice_normal, slice_index):
@@ -218,3 +219,43 @@ def extract_param_value_from_file_name(file_name, param_name):
             param_value = float(s[start_index:])
     
     return param_value  
+
+# https://stackoverflow.com/questions/17930473/how-to-make-my-pylab-poly1dfit-pass-through-zero
+def fit_poly_with_fixed_low_order_coeff(x, y, n=3, low_order_coeff=[1, 1]):
+    a = x[:, np.newaxis] ** np.arange(len(low_order_coeff), n+1)
+    coeff = np.linalg.lstsq(a, y)[0]
+    return np.concatenate((low_order_coeff, coeff))
+
+# input - df: a Dataframe, chunkSize: the chunk size
+# output - a list of DataFrame
+# purpose - splits the DataFrame into smaller chunks
+def split_dataframe(df, chunk_size = 100): 
+    chunks = list()
+    num_chunks = len(df) // chunk_size + 1
+    for i in range(num_chunks):
+        chunks.append(df[i*chunk_size:(i+1)*chunk_size])
+    return chunks
+
+def extract_percentile_envelope(df, variable_name_x, variable_name_y, chunk_size, percentile_value):
+    if len(df) < 3*chunk_size:
+        print('Too large chunk size compared to the data set scale!')
+    
+    df_chunks = split_dataframe(df.sort_values(by=variable_name_x), chunk_size)
+    
+    if (len(df_chunks[-1]) < 10) or (len(df_chunks[-1]) < 0.2*chunk_size):
+        print('Too few data points in the last chunk!')      
+    
+    chunk_x = [np.mean(df[variable_name_x]) for df in df_chunks]
+    chunk_y = [np.percentile(df[variable_name_y], percentile_value) for df in df_chunks]
+    
+    return chunk_x, chunk_y
+
+def round_it(value, significant_fig_num):
+    if np.isnan(value):
+        value_rounded = value
+    elif int(np.log10(np.abs(value)) + 1) > 3:
+        value_rounded = np.round(value)
+    else:
+        value_rounded = round(value, sigfigs=significant_fig_num)
+    
+    return value_rounded
