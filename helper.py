@@ -251,7 +251,7 @@ def extract_percentile_envelope(df, variable_name_x, variable_name_y, chunk_size
     return chunk_x, chunk_y
 
 def round_it(value, significant_fig_num):
-    if np.isnan(value):
+    if np.isnan(value) or np.isinf(value) or (value == 0):
         value_rounded = value
     elif int(np.log10(np.abs(value)) + 1) > 3:
         value_rounded = np.round(value)
