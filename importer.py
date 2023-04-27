@@ -99,13 +99,13 @@ def import_field_from_dasy_in_cache(filename, distance_mm, print_grid=True):
 	f = h5py.File(filename, 'r')
 	grid_points = f['gridcache']['mapentry_0_']['grid']['_Object']['_Points']
 	grid_shape = f['gridcache']['mapentry_0_']['grid']['_Object']['_Dimensions']
-	grid_points_x = grid_points[:,0].reshape(grid_shape[0], grid_shape[1], order='F')
+	grid_points_x = grid_points[:,0].reshape(grid_shape[0], grid_shape[1], order='F') # reshape operation cannot be made in some cases!
 	grid_points_y = grid_points[:,1].reshape(grid_shape[0], grid_shape[1], order='F')
 	grid_points_z = grid_points[:,2].reshape(grid_shape[0], grid_shape[1], order='F')
 	grid_x = grid_points_x[:,0]
 	grid_y = grid_points_y[0,:]
 	grid_z = grid_points_z[:,0]
-	grid_0 = [grid_x, grid_y]
+	grid_0 = [grid_x, grid_y] # meas grid whose center corresponds to the DUT reference point
 	
 	
 	# extract E, H, and S, as well as their grids. Note that S has a grid different from E and H. 
@@ -118,8 +118,8 @@ def import_field_from_dasy_in_cache(filename, distance_mm, print_grid=True):
 	h_meas = h_meas / np.sqrt(2)
   
 	grid_e_x = loc_e[0,:,0]; grid_e_y = loc_e[1,0,:]; grid_e_z = loc_e[2,0,:]; grid_e = [grid_e_x, grid_e_y]
-	grid_h_x = loc_h[0,:,0]; grid_h_y = loc_h[1,0,:]; grid_h_z = loc_h[2,0,:]; grid_h = [grid_h_x, grid_h_y]
-	grid_s_x = loc_s[0,:,0]; grid_s_y = loc_s[1,0,:]; grid_s_z = loc_s[2,0,:]; grid_s = [grid_s_x, grid_s_y]
+	grid_h_x = loc_h[0,:,0]; grid_h_y = loc_h[1,0,:]; grid_h_z = loc_h[2,0,:]; grid_h = [grid_h_x, grid_h_y] # H-field grid, same as E-field grid
+	grid_s_x = loc_s[0,:,0]; grid_s_y = loc_s[1,0,:]; grid_s_z = loc_s[2,0,:]; grid_s = [grid_s_x, grid_s_y] # S-field grid, different from E-field grid
 
 	# calcu the interested quantities
 	#e_tot_rms = np.real(mv.mag3(e_meas / np.sqrt(2)))
