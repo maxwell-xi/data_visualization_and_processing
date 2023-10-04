@@ -166,3 +166,32 @@ def import_field_from_dasy_in_cache(filename, distance_mm, print_grid=True):
 			print('Min and max z-axis coordinates [mm]: {:.2f}, {:.2f}'.format(np.min(grid_s_z)*1e3, np.max(grid_s_z)*1e3))
 	
 	return grid_0, grid_e, grid_h, grid_s, e_meas, h_meas, s_meas
+    
+
+def import_field_from_hfss_in_fld(filename, print_grid=0):
+    f = open(filename, 'r')
+    lines = f.readlines()
+    
+    if print_grid == 1:
+        print(lines[:2])
+        
+    x = []
+    y = []
+    z = []
+    field = []
+    
+    for line in lines[2:]:
+        x.append(float(line.split()[0]))
+        y.append(float(line.split()[1]))
+        z.append(float(line.split()[2]))
+        field.append(float(line.split()[3]))
+    f.close()
+    
+    grid_x = np.unique(x)
+    grid_y = np.unique(y)
+    grid_z = np.unique(z)
+    grid = [grid_x, grid_y, grid_z]
+    
+    field_reshaped = np.array(field).reshape(len(grid_x), len(grid_y), len(grid_z), order='C')
+    
+    return grid, field_reshaped  

@@ -2037,13 +2037,13 @@ def save_figure(filename, fig=None, destdir="."):
         for i, fig in enumerate(figs):
             print save_figure('foo{}'.format(i), fig, destdir=figsdir)
     """
-    import pyrec.mpl_helpers
+    #import pyrec.mpl_helpers
     import matplotlib.pyplot as plt
 
     # TODO: format figure size
 
-    kargs = {'format':'pdf', 'bbox_inches':'tight', 'transparent': False}
-    filepath = os.path.join(destdir, filename+'.pdf')
+    kargs = {'format':'png', 'bbox_inches':'tight', 'transparent': False, 'dpi':300}
+    filepath = os.path.join(destdir, filename+'.png')
     if fig:
         # http://matplotlib.org/api/figure_api.html#matplotlib.figure.Figure.savefig
         fig.savefig(filepath, **kargs)
@@ -2051,7 +2051,7 @@ def save_figure(filename, fig=None, destdir="."):
         # http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.savefig
         plt.savefig(filepath, **kargs)
     
-    latex_str = r'\includegraphics[keepaspectratio,width=\textwidth]{%s.pdf}'%filename
+    latex_str = r'\includegraphics[keepaspectratio,width=\textwidth]{%s.png}'%filename
 
     _LOGGER.info(latex_str)
 
