@@ -259,3 +259,16 @@ def round_it(value, significant_fig_num):
         value_rounded = round(value, sigfigs=significant_fig_num)
     
     return value_rounded
+    
+def determine_field_decay_radius(field, scan_step_mm, decay_threshold_db):
+    '''
+    field: should be a 2D array describing the field distribution at a given plane
+    scan_step_mm: the uniform step of the grid in which the field values exist
+    decay_threshold_db: the decay threshold (in dB) relative to the peak value at a given plane    
+    '''
+    field_max = np.max(field)
+    above_threshold = field >= 10**(decay_threshold_db/20)*field_max
+    num_above_threshold = np.count_nonzero(above_threshold)
+    radius_mm = np.sqrt(num_above_threshold*scan_step_mm**2 / np.pi)
+    
+    return radius_mm

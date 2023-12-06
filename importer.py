@@ -195,3 +195,54 @@ def import_field_from_hfss_in_fld(filename, print_grid=0):
     field_reshaped = np.array(field).reshape(len(grid_x), len(grid_y), len(grid_z), order='C')
     
     return grid, field_reshaped  
+    
+def import_vector_potential_and_bfield_from_external_file(filename, print_grid=0):
+    '''
+    import the external file which consists of vector potential and B-field and can be used as the source for MQS simulations in S4L
+    '''
+    f = open(filename, 'r')
+    lines = f.readlines()
+    f.close()
+    
+    if print_grid == 1:
+        print(lines[:3])    
+    
+    x0 = float(lines[0].split()[0]); nx = int(lines[0].split()[1]); dx = float(lines[0].split()[2])    
+    x = np.linspace(x0, x0+(nx-1)*dx, nx)
+    
+    y0 = float(lines[1].split()[0]); ny = int(lines[1].split()[1]); dy = float(lines[1].split()[2])    
+    y = np.linspace(y0, y0+(ny-1)*dy, ny)
+    
+    z0 = float(lines[2].split()[0]); nz = int(lines[2].split()[1]); dz = float(lines[2].split()[2])    
+    z = np.linspace(z0, z0+(nz-1)*dz, nz)
+    
+    grid = [x, y, z]
+
+    vp_x = []; vp_y = []; vp_z = []; vp_t = []    
+    for line in lines[4:4+nx*ny*nz]:
+        vp_x.append(float(line.split()[0]))
+        vp_y.append(float(line.split()[1]))
+        vp_z.append(float(line.split()[2]))
+        vp_t.append(np.sqrt(float(line.split()[0])**2 + float(line.split()[1])**2 + float(line.split()[2])**2))    
+    
+    vp_reshaped_x = np.array(vp_x).reshape(nx, ny, nz, order='C')
+    vp_reshaped_y = np.array(vp_y).reshape(nx, ny, nz, order='C')
+    vp_reshaped_z = np.array(vp_z).reshape(nx, ny, nz, order='C')
+    vp_reshaped_t = np.array(vp_t).reshape(nx, ny, nz, order='C')
+    vector_potential = [vp_reshaped_x, vp_reshaped_y, vp_reshaped_z, vp_reshaped_t]
+    
+    b_x = []; b_y = []; b_z = []; b_t = []  
+    for line in lines[5+nx*ny*nz:]:
+        b_x.append(float(line.split()[0]))
+        b_y.append(float(line.split()[1]))
+        b_z.append(float(line.split()[2]))
+        b_t.append(np.sqrt(float(line.split()[0])**2 + float(line.split()[1])**2 + float(line.split()[2])**2))
+    
+    b_reshaped_x = np.array(b_x).reshape(nx, ny, nz, order='C')
+    b_reshaped_y = np.array(b_y).reshape(nx, ny, nz, order='C')
+    b_reshaped_z = np.array(b_z).reshape(nx, ny, nz, order='C')
+    b_reshaped_t = np.array(b_t).reshape(nx, ny, nz, order='C')
+    bfield = [b_reshaped_x, b_reshaped_y, b_reshaped_z, b_reshaped_t]
+    hfield_abs = [x/sc.mu_0 for x in bfield]
+    
+    return grid, vector_potential, hfield_abs  
