@@ -1,5 +1,6 @@
 import scipy.io
 import numpy as np
+import scipy.constants as sc
 
 # modules needed by the func import_field_from_dasy_in_cache
 #from pyrec.supermash_cachefile_loader import SuperMashCachefileLoader
