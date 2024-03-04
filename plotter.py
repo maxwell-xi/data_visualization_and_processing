@@ -17,7 +17,7 @@ def plot_field_at_slice(field, grid_1, grid_2, field_name='H', grid_1_name='x', 
                                  tight_subplots = True,
                                  plot_colorbar = [False, False, False, True],
                                  db_ref = [np.nanmax(field[3]), np.nanmax(field[3]), np.nanmax(field[3]), np.nanmax(field[3])],
-                                 colorbar_label = [None, None, None, 'dB (ref={:.3g} A/m)'.format(np.nanmax(field[3]))],
+                                 colorbar_label = [None, None, None, 'dB (ref={:.3g} A/m)'.format(np.nanmax(field[3]))] if field_name == 'H' else [None, None, None, 'dB (ref={:.3g} V/m)'.format(np.nanmax(field[3]))] if field_name == 'E' else [None, None, None, 'dB (ref={:.3g})'.format(np.nanmax(field[3]))],
                                  figsize = (16,4))
     else:
         cplt.contourf_quantities(grid_1b, grid_2b, 
