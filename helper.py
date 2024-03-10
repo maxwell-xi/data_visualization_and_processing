@@ -64,8 +64,8 @@ def x_component_avg(field, avg_square_sidelength_pts, ix, iy, iz):
         iy_start = 0
         print('iy_start falls out of the dataset! iy_start is forced to be 0.')
     
-    if iy_end > field.shape[2]:
-        iy_end = field.shape[2]
+    if iy_end > np.array(field).shape[2]:
+        iy_end = np.array(field).shape[2]
         print('iy_end falls out of the dataset! iy_end is set to be the largest y index.')
         
     
@@ -74,8 +74,8 @@ def x_component_avg(field, avg_square_sidelength_pts, ix, iy, iz):
         print('iz_start falls out of the dataset! iz_start is forced to be 0.')
         
         
-    if iz_end > field.shape[3]:
-        iz_end = field.shape[3]
+    if iz_end > np.array(field).shape[3]:
+        iz_end = np.array(field).shape[3]
         print('iz_end falls out of the dataset! iz_end is set to be the largest z index.')        
     
     
@@ -96,8 +96,8 @@ def y_component_avg(field, avg_square_sidelength_pts, ix, iy, iz):
         ix_start = 0
         print('ix_start falls out of the dataset! ix_start is forced to be 0.')
     
-    if ix_end > field.shape[1]:
-        ix_end = field.shape[1]
+    if ix_end > np.array(field).shape[1]:
+        ix_end = np.array(field).shape[1]
         print('ix_end falls out of the dataset! ix_end is set to be the largest x index.')
         
     
@@ -106,8 +106,8 @@ def y_component_avg(field, avg_square_sidelength_pts, ix, iy, iz):
         print('iz_start falls out of the dataset! iz_start is forced to be 0.')
         
         
-    if iz_end > field.shape[3]:
-        iz_end = field.shape[3]
+    if iz_end > np.array(field).shape[3]:
+        iz_end = np.array(field).shape[3]
         print('iz_end falls out of the dataset! iz_end is set to be the largest z index.')    
     
     field_slice = extract_field_at_slice(field, 'y', iy)
@@ -126,8 +126,8 @@ def z_component_avg(field, avg_square_sidelength_pts, ix, iy, iz):
         ix_start = 0
         print('ix_start falls out of the dataset! ix_start is forced to be 0.')
     
-    if ix_end > field.shape[1]:
-        ix_end = field.shape[1]
+    if ix_end > np.array(field).shape[1]:
+        ix_end = np.array(field).shape[1]
         print('ix_end falls out of the dataset! ix_end is set to be the largest x index.')
         
     
@@ -136,8 +136,8 @@ def z_component_avg(field, avg_square_sidelength_pts, ix, iy, iz):
         print('iy_start falls out of the dataset! iy_start is forced to be 0.')
         
         
-    if iy_end > field.shape[2]:
-        iy_end = field.shape[2]
+    if iy_end > np.array(field).shape[2]:
+        iy_end = np.array(field).shape[2]
         print('iy_end falls out of the dataset! iy_end is set to be the largest y index.')  
         
     field_slice = extract_field_at_slice(field, 'z', iz)
