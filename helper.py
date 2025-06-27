@@ -239,13 +239,20 @@ def extract_percentile_envelope(df, variable_name_x, variable_name_y, chunk_size
     
     return chunk_x, chunk_y
 
-def round_it(value, significant_fig_num):
+def round_it(value, significant_fig_num=3, large_num_strictly_rounded=True):
+    """
+    Examples
+    --------
+    round_it(123456.78, large_num_strictly_rounded=True) returns 12300
+    round_it(123456.78, large_num_strictly_rounded=False) returns 123457
+    """
     if np.isnan(value) or np.isinf(value) or (value == 0):
         value_rounded = value
-    elif int(np.log10(np.abs(value)) + 1) > 3:
-        value_rounded = np.round(value)
     else:
-        value_rounded = round(value, sigfigs=significant_fig_num)
+        if large_num_strictly_rounded==False and int(np.log10(np.abs(value)) + 1) > 3:
+            value_rounded = np.round(value)
+        else:
+            value_rounded = round(value, sigfigs=significant_fig_num)
     
     return value_rounded
     
