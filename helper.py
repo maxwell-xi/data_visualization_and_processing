@@ -206,20 +206,6 @@ def remove_artifacts_from_2d_field_distribution(field, artifact_index):
     return field_corrected
    
   
-def extract_param_value_from_file_name(file_name, param_name):
-    param_string = file_name.split('\\')[-1] # extract the file name
-    end_index = param_string.rfind('.') # determine the end index of the actual file name (i.e., without the file extension)
-    param_string = param_string[:end_index] # remove the file extension
-    param_string_2 = param_string.split('_') # split the actual file name into multiple sections based on deliminator '_'
-    param_name_len = len(param_name)
-
-    for s in param_string_2:
-        if param_name in s:
-            start_index = s.find(param_name) + param_name_len # determine the start index of the param value
-            param_value = float(s[start_index:])
-    
-    return param_value  
-
 # https://stackoverflow.com/questions/17930473/how-to-make-my-pylab-poly1dfit-pass-through-zero
 def fit_poly_with_fixed_low_order_coeff(x, y, n=3, low_order_coeff=[1, 1]):
     a = x[:, np.newaxis] ** np.arange(len(low_order_coeff), n+1)
@@ -272,3 +258,40 @@ def determine_field_decay_radius(field, scan_step_mm, decay_threshold_db):
     radius_mm = np.sqrt(num_above_threshold*scan_step_mm**2 / np.pi)
     
     return radius_mm
+
+# find files whose names meet the specified pattern under the specified directory
+def get_files(file_dir, file_pattern):
+    """
+    Examples
+    --------
+    get_files(file_dir, '*.csv') # returns all csv files in the target directory
+    get_files(file_dir, 'project_*') # returns all files whose names start with "project_" in the target directory
+    """
+    full_pattern = os.path.join(file_dir, file_pattern)
+    files = glob.glob(full_pattern)
+    files.sort()
+    
+    return files
+
+# extract compressed files whose names start with the specified string to the specified directory
+# if out_path does not exist, it will be created first 
+def extract_zip_files(zip_files, file_header, out_dir):
+    for zip_file in zip_files:
+        with zipfile.ZipFile(zip_file) as archive:
+            for file in archive.namelist():
+                if file.startswith(file_header):
+                    archive.extract(file, out_dir)
+
+def extract_param_value_from_file_name(file_name, param_name):
+    param_string = file_name.split('\\')[-1] # extract the file name
+    end_index = param_string.rfind('.') # determine the end index of the actual file name (i.e., without the file extension)
+    param_string = param_string[:end_index] # remove the file extension
+    param_string_2 = param_string.split('_') # split the actual file name into multiple sections based on deliminator '_'
+    param_name_len = len(param_name)
+
+    for s in param_string_2:
+        if param_name in s:
+            start_index = s.find(param_name) + param_name_len # determine the start index of the param value
+            param_value = float(s[start_index:])
+    
+    return param_value 
