@@ -286,6 +286,11 @@ def extract_zip_files(zip_files, file_header, out_dir):
                     archive.extract(file, out_dir)
 
 def extract_param_value_from_file_name(file_name, param_name):
+    """
+    Examples
+    --------
+    extract_param_value_from_file_name(file_name, 'x') # returns the value "3" for the file name "*x3_y4_z5*"
+    """
     param_string = file_name.split('\\')[-1] # extract the file name
     end_index = param_string.rfind('.') # determine the end index of the actual file name (i.e., without the file extension)
     param_string = param_string[:end_index] # remove the file extension
