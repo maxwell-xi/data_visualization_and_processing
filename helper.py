@@ -331,7 +331,6 @@ def extract_param_value_from_file_name_2(file_name, param_name, num_of_values=1)
     end_index = param_string.rfind('.') # determine the end index of the actual file name (i.e., without the file extension)
     param_string = param_string[:end_index] # remove the file extension
     param_string_2 = param_string.split('_') # split the actual file name into multiple sections based on deliminator '_'
-    print(param_string_2)
 
     i = param_string_2.index(param_name)
     
