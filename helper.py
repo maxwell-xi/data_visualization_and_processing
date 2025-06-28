@@ -310,3 +310,25 @@ def extract_param_value_from_file_name(file_name, param_name):
             param_value = float(s[start_index:])
     
     return param_value 
+
+def extract_param_value_from_file_name_2(file_name, param_name, num_of_values=1):
+    """
+    Examples
+    --------
+    extract_param_value_from_file_name_2(file_name, 'scan', 4) # returns [0.0, 0.0, 1.0, 2.0] for the file name "scan_0_0_1_2.*"
+    """
+    param_string = file_name.split('\\')[-1] # extract the file name
+    end_index = param_string.rfind('.') # determine the end index of the actual file name (i.e., without the file extension)
+    param_string = param_string[:end_index] # remove the file extension
+    param_string_2 = param_string.split('_') # split the actual file name into multiple sections based on deliminator '_'
+    print(param_string_2)
+
+    i = param_string_2.index(param_name)
+    
+    if num_of_values == 1:
+        param_value = float(param_string_2[i+1])
+    else:
+        param_value = param_string_2[i+1:i+1+num_of_values]
+        param_value = [float(x) for x in param_value]
+    
+    return param_value  
