@@ -270,7 +270,7 @@ def determine_field_decay_radius(field, scan_step_mm, decay_threshold_db):
     return radius_mm
 
 # find files whose names meet the specified pattern under the specified directory
-def get_files(file_dir, file_pattern):
+def get_files(file_dir, file_pattern, file_sort_type='alphabet', file_sort_order='ascending'):
     """
     Examples
     --------
@@ -279,7 +279,17 @@ def get_files(file_dir, file_pattern):
     """
     full_pattern = os.path.join(file_dir, file_pattern)
     files = glob.glob(full_pattern)
-    files.sort()
+
+    if file_sort_type == 'time':
+        if file_sort_order == 'ascending':
+            files.sort(key=lambda x: os.path.getctime(x)) # sorting based on file creation time
+        else:
+            files.sort(key=lambda x: os.path.getctime(x), reverse=True)
+    else:
+        if file_sort_order == 'ascending': 
+            files.sort()
+        else:
+            files.sort(reverse=True)
     
     return files
 
