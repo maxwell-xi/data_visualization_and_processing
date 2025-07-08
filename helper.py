@@ -282,9 +282,9 @@ def get_files(file_dir, file_pattern, file_sort_type='alphabet', file_sort_order
 
     if file_sort_type == 'time':
         if file_sort_order == 'ascending':
-            files.sort(key=lambda x: os.path.getctime(x)) # sorting based on file creation time
+            files.sort(key=lambda x: os.path.getmtime(x)) # avoiding sorting based on file creation time which is reset during a file copy operation 
         else:
-            files.sort(key=lambda x: os.path.getctime(x), reverse=True)
+            files.sort(key=lambda x: os.path.getmtime(x), reverse=True)
     else:
         if file_sort_order == 'ascending': 
             files.sort()
