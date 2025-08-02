@@ -341,3 +341,57 @@ def extract_param_value_from_file_name_2(file_name, param_name, num_of_values=1)
         param_value = [float(x) for x in param_value]
     
     return param_value  
+
+def print_subgroup_name(input_file, group_name):
+    f = h5py.File(input_file, 'r')
+    group = f[group_name]
+    
+    for subgroup_name in group:
+        subgroup = group[subgroup_name]
+        
+        if isinstance(subgroup, h5py.Group):
+            print(subgroup_name)
+        else:
+            print('Do not find any subgroup') 
+
+def get_subgroup_name(input_file, group_name):
+    f = h5py.File(input_file, 'r')
+    group = f[group_name]
+    subgroup_list = []
+    
+    for subgroup_name in group:
+        subgroup = group[subgroup_name]
+        
+        if isinstance(subgroup, h5py.Group):
+            subgroup_list.append(subgroup_name)
+        else:
+            print('Do not find any subgroup')
+    
+    return subgroup_list
+            
+def print_subgroup_name_3level(input_file, group_name_lv1, group_name_lv2, group_name_lv3):
+    f = h5py.File(input_file, 'r')
+    group = f[group_name_lv1][group_name_lv2][group_name_lv3]
+    
+    for subgroup_name in group:
+        subgroup = group[subgroup_name]
+        
+        if isinstance(subgroup, h5py.Group):
+            print(subgroup_name)
+        else:
+            print('Do not find any subgroup')
+
+def get_subgroup_value_3level(input_file, group_name_lv1, group_name_lv2, group_name_lv3, dataset_name):
+    f = h5py.File(input_file, 'r')
+    group = f[group_name_lv1][group_name_lv2][group_name_lv3]
+    
+    value = []
+    for subgroup_name in group:
+        subgroup = group[subgroup_name]
+        
+        if isinstance(subgroup, h5py.Group):
+            value.append(subgroup[dataset_name][()])
+        else:
+            print('Do not find any subgroup') 
+    
+    return value
