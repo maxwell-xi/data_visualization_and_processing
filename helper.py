@@ -3,6 +3,7 @@ from sigfig import round
 import glob
 import os
 import zipfile
+import h5py
 
 
 def extract_field_at_slice(field, slice_normal, slice_index):
