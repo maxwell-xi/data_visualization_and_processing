@@ -271,15 +271,20 @@ def determine_field_decay_radius(field, scan_step_mm, decay_threshold_db):
     return radius_mm
 
 # find files whose names meet the specified pattern under the specified directory
-def get_files(file_dir, file_pattern, file_sort_type='alphabet', file_sort_order='ascending'):
+def get_files(file_dir, file_pattern, recursive=True, file_sort_type='alphabet', file_sort_order='ascending'):
     """
     Examples
     --------
-    get_files(file_dir, '*.csv') # returns all csv files in the target directory
-    get_files(file_dir, 'project_*') # returns all files whose names start with "project_" in the target directory
+    get_files(file_dir, '*.csv') # returns all csv files in the target directory and its sub-folders
+    get_files(file_dir, recursive=False, 'project_*') # returns all files whose names start with "project_" in the target directory, but would not search its sub-folders
     """
-    full_pattern = os.path.join(file_dir, file_pattern)
-    files = glob.glob(full_pattern)
+    if recursive == True:
+        # Use '**' to match recursively, and set recursive=True
+        full_pattern = os.path.join(file_dir, '**', file_pattern)
+        files = glob.glob(full_pattern, recursive=True)
+    else:
+        full_pattern = os.path.join(file_dir, file_pattern)
+        files = glob.glob(full_pattern)
 
     if file_sort_type == 'time':
         if file_sort_order == 'ascending':
