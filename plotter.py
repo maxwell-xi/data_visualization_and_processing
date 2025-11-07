@@ -29,3 +29,42 @@ def plot_field_at_slice(field, grid_1, grid_2, field_name='H', grid_1_name='x', 
                                  tight_subplots = True,
                                  plot_colorbar = [False, False, False, True],                                 
                                  figsize = (16,4))
+
+
+def plot_2trace_with_dual_y_axes(x1, y1, x2, y2, x_label, y1_label, y2_label, x_lim=[None, None], y1_lim=[None, None], y2_lim=[None, None], show_legend=True, show_grid='both', figsize=[12, 4]):
+    '''
+    draw 2 traces in a plot with dual y axes at two sides
+    '''
+    fig, ax1 = plt.subplots(figsize=(figsize[0], figsize[1]))
+    ax2 = ax1.twinx()
+
+    trace1 = ax1.plot(x1, y1, c='C0', label=y1_label)
+    trace2 = ax2.plot(x2, y2, c='C1', label=y2_label)
+
+    ax1.set_xlabel(x_label)
+    ax1.set_xlim(x_lim)
+
+    ax1.set_ylabel(y1_label, color='C0')
+    ax1.tick_params(axis='y', labelcolor='C0')
+    #ax1.grid(axis='y')
+    ax1.set_ylim(y1_lim)
+
+    ax2.set_ylabel(y2_label, color='C1')
+    ax2.tick_params(axis='y', labelcolor='C1')
+    #ax2.grid(False)
+    ax2.set_ylim(y2_lim)
+
+    if show_legend == True:
+        traces = trace1 + trace2
+        labels = [t.get_label() for t in traces]
+        plt.legend(traces, labels)
+
+    if show_grid == 'x':
+        ax1.grid(axis = 'x')
+    elif show_grid == 'y':
+        ax1.grid(axis = 'y')
+    elif show_grid == 'none':
+        ax1.grid(False)
+    else:
+        ax1.grid(True)
+    ax2.grid(False)     
