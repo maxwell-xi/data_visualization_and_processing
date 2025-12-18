@@ -1,4 +1,5 @@
 import numpy as np
+from sklearn.linear_model import LinearRegression
 
 # total sum of squares (SST)
 def calc_total_sum_of_squares(y):
@@ -101,3 +102,18 @@ def fit_poly_with_fixed_low_order_coeff(x, y, n=3, low_order_coeff=[1, 1]):
     a = x[:, np.newaxis] ** np.arange(len(low_order_coeff), n+1)
     coeff = np.linalg.lstsq(a, y)[0]
     return np.concatenate((low_order_coeff, coeff))
+
+def linear_regression_through_point(x, y, x0, y0):
+    # Center data around the specified point
+    x_centered = x - x0
+    y_centered = y - y0
+
+    # Fit linear regression with no intercept to centered data
+    model = LinearRegression(fit_intercept=False)
+    model.fit(x_centered.reshape(-1, 1), y_centered)
+    slope = model.coef_[0]
+
+    # Calculate intercept to ensure the line passes through (x0, y0)
+    intercept = y0 - slope * x0
+
+    return slope, intercept
