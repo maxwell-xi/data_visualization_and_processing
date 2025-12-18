@@ -68,6 +68,15 @@ def calc_prediction_error(x, y, model, output_in_db=True):
     
     return error
 
+def calc_standard_error_of_slope(x, y, y_fit, degree):
+    ser = calc_standard_error_of_regression(y, y_fit, degree)
+    return np.sqrt(ser**2 / calc_total_sum_of_squares(x))
+
+def calc_standard_error_of_intercept(x, y, y_fit, degree):
+    ser = calc_standard_error_of_regression(y, y_fit, degree)
+    obs_num = len(y)
+    return np.sqrt(ser**2 * np.sum(x**2) / (obs_num * calc_total_sum_of_squares(x)))
+
 def format_polynomial_latex(poly_model):
     terms = []
     for power, coeff in enumerate(poly_model.coefficients):
