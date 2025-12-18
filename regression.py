@@ -57,6 +57,16 @@ def calc_r_squared_pred(x, y, degree):
     
     return 1 - (ss_residual_pred / ss_total)
 
+def calc_prediction_error(x, y, model, output_in_db=True):
+    y_pred = model(x)
+    
+    if output_in_db == True:
+        error = 20*np.log10(y_pred / y)
+    else:
+        error = 100 * (y_pred - y) / y
+    
+    return error
+
 def format_polynomial_latex(poly_model):
     terms = []
     for power, coeff in enumerate(poly_model.coefficients):
@@ -86,12 +96,8 @@ def format_polynomial_latex(poly_model):
         terms.append(term)
     return " ".join(terms)
 
-def calc_prediction_error(x, y, model, output_in_db=True):
-    y_pred = model(x)
-    
-    if output_in_db == True:
-        error = 20*np.log10(y_pred / y)
-    else:
-        error = 100 * (y_pred - y) / y
-    
-    return error
+# https://stackoverflow.com/questions/17930473/how-to-make-my-pylab-poly1dfit-pass-through-zero
+def fit_poly_with_fixed_low_order_coeff(x, y, n=3, low_order_coeff=[1, 1]):
+    a = x[:, np.newaxis] ** np.arange(len(low_order_coeff), n+1)
+    coeff = np.linalg.lstsq(a, y)[0]
+    return np.concatenate((low_order_coeff, coeff))

@@ -210,12 +210,6 @@ def remove_artifacts_from_2d_field_distribution(field, artifact_index):
     return field_corrected
    
   
-# https://stackoverflow.com/questions/17930473/how-to-make-my-pylab-poly1dfit-pass-through-zero
-def fit_poly_with_fixed_low_order_coeff(x, y, n=3, low_order_coeff=[1, 1]):
-    a = x[:, np.newaxis] ** np.arange(len(low_order_coeff), n+1)
-    coeff = np.linalg.lstsq(a, y)[0]
-    return np.concatenate((low_order_coeff, coeff))
-
 # input - df: a Dataframe, chunkSize: the chunk size
 # output - a list of DataFrame
 # purpose - splits the DataFrame into smaller chunks
