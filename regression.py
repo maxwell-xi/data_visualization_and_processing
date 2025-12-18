@@ -16,10 +16,13 @@ def calc_r_squared(y, y_fit):
     return 1 - (ss_residual / ss_total)
 
 # adjusted R-squared
-def calc_r_squared_adj(y, y_fit, degree):
+def calc_r_squared_adj(y, y_fit, degree=1):
+    """
+    linear regression (straight-line model) is polynomial regression of degress (also called order) 1
+    """
     r_squared = calc_r_squared(y, y_fit)
     obs_num = len(y)
-    return 1 - ((1-r_squared) * (obs_num-1)) / (obs_num - degree -1)
+    return 1 - ((1-r_squared) * (obs_num-1)) / (obs_num - degree - 1)
 
 # multiple R, also called correlation coefficient
 def calc_multiple_r(y, y_fit):
@@ -27,7 +30,7 @@ def calc_multiple_r(y, y_fit):
     return np.sqrt(r_squared)
 
 # standard error of the regression/estimate (SER), also called residual standard error
-def calc_standard_error_of_regression(y, y_fit, degree):
+def calc_standard_error_of_regression(y, y_fit, degree=1):
     ss_residual = calc_residual_sum_of_squares(y, y_fit)
     obs_num = len(y)
     return np.sqrt(ss_residual / (obs_num - degree - 1))
@@ -39,7 +42,7 @@ def calc_root_mean_square_error(y, y_fit):
     return np.sqrt(ss_residual / obs_num)
 
 # calculate Predicted R-squared using LOOCV (leave-one-out cross-validation) method
-def calc_r_squared_pred(x, y, degree):
+def calc_r_squared_pred(x, y, degree=1):
     n = len(x)
     y_pred = np.zeros(n)
     
@@ -68,11 +71,11 @@ def calc_prediction_error(x, y, model, output_in_db=True):
     
     return error
 
-def calc_standard_error_of_slope(x, y, y_fit, degree):
+def calc_standard_error_of_slope(x, y, y_fit, degree=1):
     ser = calc_standard_error_of_regression(y, y_fit, degree)
     return np.sqrt(ser**2 / calc_total_sum_of_squares(x))
 
-def calc_standard_error_of_intercept(x, y, y_fit, degree):
+def calc_standard_error_of_intercept(x, y, y_fit, degree=1):
     ser = calc_standard_error_of_regression(y, y_fit, degree)
     obs_num = len(y)
     return np.sqrt(ser**2 * np.sum(x**2) / (obs_num * calc_total_sum_of_squares(x)))
