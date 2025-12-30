@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn.linear_model import LinearRegression
+from tabulate import tabulate
 
 # total sum of squares (SST)
 def calc_total_sum_of_squares(y):
@@ -129,3 +130,20 @@ def linear_regression_through_point(x, y, x0, y0):
     intercept = y0 - slope * x0
 
     return slope, intercept
+
+def list_regression_metrics(x, y, y_fit, degree=1):
+    r2 = calc_r_squared(y, y_fit)
+    r2_adj = calc_r_squared_adj(y, y_fit, degree)
+    r2_pred = calc_r_squared_pred(x, y, degree)
+    rmse = calc_root_mean_square_error(y, y_fit)
+    ser = calc_standard_error_of_regression(y, y_fit, degree)
+    ses = calc_standard_error_of_slope(x, y, y_fit, degree)
+    sei = calc_standard_error_of_intercept(x, y, y_fit, degree)
+    
+    result_list = [r2, r2_adj, r2_pred, rmse, ser, ses, sei]
+    
+    param_list = ['R2', 'R2 adjusted', 'R2 predicted', 'RMSE', 'SER (regression)', 'SES (slope)', 'SEI (intercept)']
+    
+    pairs = [list(x) for x in zip(param_list, result_list)]    
+  
+    print(tabulate(pairs, headers=['Metric', 'Value'], floatfmt='.3g'))
