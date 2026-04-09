@@ -72,14 +72,44 @@ def calc_prediction_error(x, y, model, output_in_db=True):
     
     return error
 
-def calc_standard_error_of_slope(x, y, y_fit, degree=1):
-    ser = calc_standard_error_of_regression(y, y_fit, degree)
+def calc_standard_error_of_slope_1degree(x, y, y_fit):
+    ser = calc_standard_error_of_regression(y, y_fit, degree=1)
     return np.sqrt(ser**2 / calc_total_sum_of_squares(x))
 
-def calc_standard_error_of_intercept(x, y, y_fit, degree=1):
-    ser = calc_standard_error_of_regression(y, y_fit, degree)
+def calc_standard_error_of_intercept_1degree(x, y, y_fit):
+    ser = calc_standard_error_of_regression(y, y_fit, degree=1)
     obs_num = len(y)
     return np.sqrt(ser**2 * np.sum(x**2) / (obs_num * calc_total_sum_of_squares(x)))
+
+def calc_standard_error_of_intercept_and_slope(x, y, degree=1):
+    x = np.asarray(x)
+    y = np.asarray(y)
+    n = len(x)
+
+    # Build design matrix X: [1, x, x^2, ..., x^degree]
+    X = np.vander(x, N=degree+1, increasing=True)  # column 0 is intercept term
+
+    # OLS estimate of coefficients beta
+    XtX = X.T @ X
+    XtX_inv = np.linalg.inv(XtX)
+    beta_hat = XtX_inv @ X.T @ y
+
+    # Residuals and residual variance sigma^2
+    y_hat = X @ beta_hat
+    residuals = y - y_hat
+    dof = n - (degree + 1)          # n - number_of_parameters
+    sigma2_hat = (residuals @ residuals) / dof
+
+    # Covariance matrix of beta: sigma^2 * (X^T X)^(-1)
+    cov_beta = sigma2_hat * XtX_inv
+
+    # Standard error of intercept = sqrt(variance of beta_0)
+    se_intercept = np.sqrt(cov_beta[0, 0])
+    
+    # Standard error of slope (coefficient of x^1 term)
+    se_slope = np.sqrt(cov_beta[1, 1])
+
+    return se_intercept, se_slope
 
 def format_polynomial_latex(poly_model):
     terms = []
