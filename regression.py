@@ -167,8 +167,7 @@ def list_regression_metrics(x, y, y_fit, degree=1):
     r2_pred = calc_r_squared_pred(x, y, degree)
     rmse = calc_root_mean_square_error(y, y_fit)
     ser = calc_standard_error_of_regression(y, y_fit, degree)
-    ses = calc_standard_error_of_slope(x, y, y_fit, degree)
-    sei = calc_standard_error_of_intercept(x, y, y_fit, degree)
+    sei, ses = calc_standard_error_of_intercept_and_slope(x, y, degree)
     
     result_list = [r2, r2_adj, r2_pred, rmse, ser, ses, sei]
     
