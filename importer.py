@@ -15,27 +15,27 @@ def import_field_from_s4l_in_mat(filename, cell_based=False, print_grid=0):
 	grid_z = input_data['Axis2'][0,:]
 
 	if cell_based == True:  # if the field data exist at nodes
-    	grid = [grid_x, grid_y, grid_z]
-    else:  # if the field data exist at cell centers
-        grid_x_cell = []
-        for i in range(len(grid_x)-1):
-            grid_x_mid = (grid_x[i]+grid_x[i+1])/2
-            grid_x_cell.append(grid_x_mid)
-        grid_x_cell = np.array(grid_x_cell)
-        
-        grid_y_cell = []
-        for i in range(len(grid_y)-1):
-            grid_y_mid = (grid_y[i]+grid_y[i+1])/2
-            grid_y_cell.append(grid_y_mid)
-        grid_y_cell = np.array(grid_y_cell)
-        
-        grid_z_cell = []
-        for i in range(len(grid_z)-1):
-            grid_z_mid = (grid_z[i]+grid_z[i+1])/2
-            grid_z_cell.append(grid_z_mid)
-        grid_z_cell = np.array(grid_z_cell)
-        
-        grid = [grid_x_cell, grid_y_cell, grid_z_cell]
+		grid = [grid_x, grid_y, grid_z]
+	else:  # if the field data exist at cell centers
+		grid_x_cell = []
+		for i in range(len(grid_x)-1):
+			grid_x_mid = (grid_x[i]+grid_x[i+1])/2
+			grid_x_cell.append(grid_x_mid)
+		grid_x_cell = np.array(grid_x_cell)
+		
+		grid_y_cell = []
+		for i in range(len(grid_y)-1):
+			grid_y_mid = (grid_y[i]+grid_y[i+1])/2
+			grid_y_cell.append(grid_y_mid)
+		grid_y_cell = np.array(grid_y_cell)
+		
+		grid_z_cell = []
+		for i in range(len(grid_z)-1):
+			grid_z_mid = (grid_z[i]+grid_z[i+1])/2
+			grid_z_cell.append(grid_z_mid)
+		grid_z_cell = np.array(grid_z_cell)
+		
+		grid = [grid_x_cell, grid_y_cell, grid_z_cell]
 	
 	field_x = input_data['Snapshot0'][:,0]
 	field_y = input_data['Snapshot0'][:,1]
@@ -53,13 +53,13 @@ def import_field_from_s4l_in_mat(filename, cell_based=False, print_grid=0):
 	if print_grid == 1:
 		print('X grid')
 		print('Min and max coordinates [mm]: {}, {}; Step [mm]: {}; Number of points: {}'.
-			  format(1e3*grid_x[0], 1e3*grid_x[-1], 1e3*(grid_x[1]-grid_x[0]), grid_x.shape[0]))
+			format(1e3*grid_x[0], 1e3*grid_x[-1], 1e3*(grid_x[1]-grid_x[0]), grid_x.shape[0]))
 		print('\nY grid')
 		print('Min and max coordinates [mm]: {}, {}; Step [mm]: {}; Number of points: {}'.
-			  format(1e3*grid_y[0], 1e3*grid_y[-1], 1e3*(grid_y[1]-grid_y[0]), grid_y.shape[0]))
+			format(1e3*grid_y[0], 1e3*grid_y[-1], 1e3*(grid_y[1]-grid_y[0]), grid_y.shape[0]))
 		print('\nZ grid')
 		print('Min and max coordinates [mm]: {}, {}; Step [mm]: {}; Number of points: {}'.
-			  format(1e3*grid_z[0], 1e3*grid_z[-1], 1e3*(grid_z[1]-grid_z[0]), grid_z.shape[0]))    
+			format(1e3*grid_z[0], 1e3*grid_z[-1], 1e3*(grid_z[1]-grid_z[0]), grid_z.shape[0]))    
 	
 	return grid, output_field
 	
