@@ -7,13 +7,35 @@ import scipy.constants as sc
 #import pyrec.mathvec3 as mv
 import h5py
 
-def import_field_from_s4l_in_mat(filename, print_grid=0):
+def import_field_from_s4l_in_mat(filename, cell_based=False, print_grid=0):
 	input_data = scipy.io.loadmat(filename)
 
 	grid_x = input_data['Axis0'][0,:]
 	grid_y = input_data['Axis1'][0,:]
 	grid_z = input_data['Axis2'][0,:]
-	grid = [grid_x, grid_y, grid_z]
+
+	if cell_based == True:  # if the field data exist at nodes
+    	grid = [grid_x, grid_y, grid_z]
+    else:  # if the field data exist at cell centers
+        grid_x_cell = []
+        for i in range(len(grid_x)-1):
+            grid_x_mid = (grid_x[i]+grid_x[i+1])/2
+            grid_x_cell.append(grid_x_mid)
+        grid_x_cell = np.array(grid_x_cell)
+        
+        grid_y_cell = []
+        for i in range(len(grid_y)-1):
+            grid_y_mid = (grid_y[i]+grid_y[i+1])/2
+            grid_y_cell.append(grid_y_mid)
+        grid_y_cell = np.array(grid_y_cell)
+        
+        grid_z_cell = []
+        for i in range(len(grid_z)-1):
+            grid_z_mid = (grid_z[i]+grid_z[i+1])/2
+            grid_z_cell.append(grid_z_mid)
+        grid_z_cell = np.array(grid_z_cell)
+        
+        grid = [grid_x_cell, grid_y_cell, grid_z_cell]
 	
 	field_x = input_data['Snapshot0'][:,0]
 	field_y = input_data['Snapshot0'][:,1]
