@@ -43,9 +43,9 @@ def import_field_from_s4l_in_mat(filename, cell_based=True, print_grid=0):
 	
 	# F-order should be used in the reshaping, since the first index (for X coordiante) changes the fastest, 
 	# and the last index (for Z coordinate) changes the slowest 
-	field_x_reshaped = field_x.reshape(grid_x.shape[0], grid_y.shape[0], grid_z.shape[0], order='F') 
-	field_y_reshaped = field_y.reshape(grid_x.shape[0], grid_y.shape[0], grid_z.shape[0], order='F')
-	field_z_reshaped = field_z.reshape(grid_x.shape[0], grid_y.shape[0], grid_z.shape[0], order='F')    
+	field_x_reshaped = field_x.reshape(grid[0].shape[0], grid[1].shape[0], grid[2].shape[0], order='F') 
+	field_y_reshaped = field_y.reshape(grid[0].shape[0], grid[1].shape[0], grid[2].shape[0], order='F')
+	field_z_reshaped = field_z.reshape(grid[0].shape[0], grid[1].shape[0], grid[2].shape[0], order='F')    
 	
 	field_tot = np.sqrt(np.square(field_x_reshaped) + np.square(field_y_reshaped) + np.square(field_z_reshaped))      
 	output_field = [field_x_reshaped, field_y_reshaped, field_z_reshaped, field_tot]
@@ -53,13 +53,13 @@ def import_field_from_s4l_in_mat(filename, cell_based=True, print_grid=0):
 	if print_grid == 1:
 		print('X grid')
 		print('Min and max coordinates [mm]: {}, {}; Step [mm]: {}; Number of points: {}'.
-			format(1e3*grid_x[0], 1e3*grid_x[-1], 1e3*(grid_x[1]-grid_x[0]), grid_x.shape[0]))
+			format(1e3*grid[0][0], 1e3*grid[0][-1], 1e3*(grid[0][1]-grid[0][0]), grid[0].shape[0]))
 		print('\nY grid')
 		print('Min and max coordinates [mm]: {}, {}; Step [mm]: {}; Number of points: {}'.
-			format(1e3*grid_y[0], 1e3*grid_y[-1], 1e3*(grid_y[1]-grid_y[0]), grid_y.shape[0]))
+			format(1e3*grid[1][0], 1e3*grid[1][-1], 1e3*(grid[1][1]-grid[1][0]), grid[1].shape[0]))
 		print('\nZ grid')
 		print('Min and max coordinates [mm]: {}, {}; Step [mm]: {}; Number of points: {}'.
-			format(1e3*grid_z[0], 1e3*grid_z[-1], 1e3*(grid_z[1]-grid_z[0]), grid_z.shape[0]))    
+			format(1e3*grid[2][0], 1e3*grid[2][-1], 1e3*(grid[2][1]-grid[2][0]), grid[2].shape[0]))    
 	
 	return grid, output_field
 	
