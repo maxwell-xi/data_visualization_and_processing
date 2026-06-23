@@ -7,14 +7,14 @@ import scipy.constants as sc
 #import pyrec.mathvec3 as mv
 import h5py
 
-def import_field_from_s4l_in_mat(filename, cell_based=False, print_grid=0):
+def import_field_from_s4l_in_mat(filename, cell_based=True, print_grid=0):
 	input_data = scipy.io.loadmat(filename)
 
 	grid_x = input_data['Axis0'][0,:]
 	grid_y = input_data['Axis1'][0,:]
 	grid_z = input_data['Axis2'][0,:]
 
-	if cell_based == True:  # if the field data exist at nodes
+	if cell_based == False:  # if the field data exist at nodes
 		grid = [grid_x, grid_y, grid_z]
 	else:  # if the field data exist at cell centers
 		grid_x_cell = []
