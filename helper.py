@@ -215,7 +215,11 @@ def remove_artifacts_from_2d_field_distribution(field, artifact_index):
 # purpose - splits the DataFrame into smaller chunks
 def split_dataframe(df, chunk_size = 100): 
     chunks = list()
-    num_chunks = len(df) // chunk_size + 1
+    if len(df) % chunk_size != 0:
+        num_chunks = len(df) // chunk_size + 1
+    else:
+        num_chunks = len(df) // chunk_size
+        
     for i in range(num_chunks):
         chunks.append(df[i*chunk_size:(i+1)*chunk_size])
     return chunks
