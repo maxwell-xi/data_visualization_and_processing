@@ -727,7 +727,7 @@ class ComplexVectorPlotter(object):
                     print_colorbar = cbar
                 else:
                     if can_skip_colorbar:
-                        if tight_subplots and not ax[i,j].is_last_col():
+                        if tight_subplots and not ax[i,j].get_subplotspec().is_last_col():
                             print_colorbar = False
                         else:
                             print_colorbar = True
@@ -750,17 +750,17 @@ class ComplexVectorPlotter(object):
                 if plot_quant is not None and ('_spectrum' in plot_quant or isinstance(data_quant, SpectralQuantity)):
                     xlabel_str = r'$k_x/\beta$' if xlabel[ii][jj] is None else xlabel[ii][jj]
                     ylabel_str = r'$k_y/\beta$' if ylabel[ii][jj] is None else ylabel[ii][jj]
-                    if not all_spectral or ax[i,j].is_first_col():
+                    if not all_spectral or ax[i,j].get_subplotspec().is_first_col():
                         ax[i,j].set_ylabel( ylabel_str )
-                    if not all_spectral or ax[i,j].is_last_row():
+                    if not all_spectral or ax[i,j].get_subplotspec().is_last_row():
                         ax[i,j].set_xlabel( xlabel_str )
                     add_visible_region(beta=1, ax=ax[i,j])
                 else:
                     xlabel_str = r'$x/\lambda$' if xlabel[ii][jj] is None else xlabel[ii][jj]
                     ylabel_str = r'$y/\lambda$' if ylabel[ii][jj] is None else ylabel[ii][jj]            
-                    if not tight_subplots or (not all_spatial or ax[i,j].is_first_col()):
+                    if not tight_subplots or (not all_spatial or ax[i,j].get_subplotspec().is_first_col()):
                         ax[i,j].set_ylabel( ylabel_str )
-                    if not tight_subplots or (not all_spatial or ax[i,j].is_last_row()):
+                    if not tight_subplots or (not all_spatial or ax[i,j].get_subplotspec().is_last_row()):
                         ax[i,j].set_xlabel( xlabel_str )
 
                 ax[i,j].set_aspect('equal', 'datalim')
