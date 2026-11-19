@@ -269,3 +269,40 @@ def import_vector_potential_and_bfield_from_external_file(filename, print_grid=0
     hfield_abs = [x/sc.mu_0 for x in bfield]
     
     return grid, vector_potential, hfield_abs  
+
+def import_field_from_dasy_in_magpy(filename, print_grid=0):
+    input_data = h5py.File(filename, 'r')
+
+    group = input_data['data']
+
+    subgroup_list = []
+    for x in group:
+        subgroup_list.append(x)
+    subgroup = subgroup_list[0]
+
+    coords = group[subgroup]['magnetic']['coordinates']
+    hfield = group[subgroup]['magnetic']['values']
+
+    grid_x = coords[:,0,0,0]
+    grid_y = coords[0,:,0,1]
+    grid_z = coords[0,0,:,2]
+    grid = [grid_x, grid_y, grid_z]
+
+    if print_grid == 1:
+        print('X grid')
+        print('Min and max coordinates [mm]: {}, {}; Step [mm]: {}; Number of points: {}'.
+            format(1e3*grid[0][0], 1e3*grid[0][-1], 1e3*(grid[0][1]-grid[0][0]), grid[0].shape[0]))
+        print('\nY grid')
+        print('Min and max coordinates [mm]: {}, {}; Step [mm]: {}; Number of points: {}'.
+            format(1e3*grid[1][0], 1e3*grid[1][-1], 1e3*(grid[1][1]-grid[1][0]), grid[1].shape[0]))
+        print('\nZ grid')
+        print('Min and max coordinates [mm]: {}, {}; Step [mm]: {}; Number of points: {}'.
+            format(1e3*grid[2][0], 1e3*grid[2][-1], 1e3*(grid[2][1]-grid[2][0]), grid[2].shape[0])) 
+
+    hx = hfield[:,:,:,0]
+    hy = hfield[:,:,:,1]
+    hz = hfield[:,:,:,2]
+    ht = np.sqrt(np.square(hx) + np.square(hy) + np.square(hz))
+    output_field = [hx, hy, hz, ht]
+    
+    return grid, output_field
